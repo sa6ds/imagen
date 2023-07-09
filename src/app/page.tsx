@@ -1,10 +1,9 @@
 "use client";
-import { useMutation } from "convex/react";
 import { useForm } from "react-hook-form";
-import { api } from "../../convex/_generated/api";
+import { useMutation } from "../../convex/_generated/react";
 
 export default function Home() {
-  const saveSketchMutation = useMutation(api.sketches.saveSketch);
+  const saveSketchMutation = useMutation("sketches:saveSketch");
 
   const {
     register,

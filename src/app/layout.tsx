@@ -5,7 +5,7 @@ import ConvexClientProvider from "./ConvexClientProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Imagen | Home",
+  title: "Imagen",
   description: "Generate images with a click of a button!",
 };
 

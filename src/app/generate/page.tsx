@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "../../../convex/_generated/react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useRef } from "react";
 import Head from "next/head";
+import Image from "next/image";
 
 export default function Home() {
   const saveSketchMutation = useMutation("sketches:saveSketch");
@@ -72,15 +73,21 @@ export default function Home() {
           </h2>
           <div className="flex flex-wrap justify-center gap-4 lg:grid lg:grid-cols-4 lg:gap-4">
             {sortedSketches.map((sketch) =>
-              sketch ? (
-                <img
-                  // key={sketch._id}
+              sketch && sketch.result ? (
+                <Image
+                  key={sketch._id.toString()}
                   width="256"
                   height="256"
                   src={sketch.result}
+                  alt={`Sketch of ${sketch.prompt}`}
                 />
               ) : (
-                <p>Loading</p>
+                <p
+                  className="flex flex-col mx-auto justify-center"
+                  key={sketch._id.toString()}
+                >
+                  Loading
+                </p>
               )
             )}
           </div>

@@ -5,6 +5,8 @@ import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useRef } from "react";
 import Head from "next/head";
 import Image from "next/image";
+import { RiseLoader } from "react-spinners";
+import Link from "next/link";
 
 export default function Home() {
   const saveSketchMutation = useMutation("sketches:saveSketch");
@@ -20,12 +22,14 @@ export default function Home() {
 
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
 
-  const sortedSketches = (sketchesQuery ?? []).sort((a, b) => {
-    return b._creationTime - a._creationTime;
-  });
+  const sortedSketches = (sketchesQuery ?? [])
+    .sort((a, b) => {
+      return b._creationTime - a._creationTime;
+    })
+    .slice(0, 7);
 
   return (
-    <main className="container mx-auto px-16 py-12 flex min-h-screen flex-col items-center justify-between pt-8 dark:text-slate-200">
+    <main className="container mx-auto px-16 py-12 flex flex-col items-center justify-between pt-8 dark:text-slate-200">
       <Head>
         <title>Generate | Imagen</title>
       </Head>
@@ -71,25 +75,35 @@ export default function Home() {
           <h2 className="text-center mb-4 lg:mb-2 lg:text-left">
             Latest Sketches
           </h2>
-          <div className="flex flex-wrap justify-center gap-4 lg:grid lg:grid-cols-4 lg:gap-4">
+          <div className="flex flex-wrap justify-center lg:justify-normal gap-4 ">
             {sortedSketches.map((sketch) =>
               sketch && sketch.result ? (
-                <Image
-                  key={sketch._id.toString()}
-                  width="256"
-                  height="256"
-                  src={sketch.result}
-                  alt={`Sketch of ${sketch.prompt}`}
-                />
+                <div key={sketch._id.toString()} className="shadow-lg">
+                  <Image
+                    width="256"
+                    height="256"
+                    src={sketch.result}
+                    alt={`Sketch of ${sketch.prompt}`}
+                  />
+                </div>
               ) : (
-                <p
-                  className="flex flex-col mx-auto justify-center"
+                <div
+                  className="border-2 rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center"
                   key={sketch._id.toString()}
                 >
-                  Loading
-                </p>
+                  <RiseLoader color="#f97316" speedMultiplier={1} />
+                </div>
               )
             )}
+            <Link
+              href={"/collection"}
+              type="button"
+              className="transition duration-50 ease-in-out delay-100 text-white bg-gradient-to-b from-orange-500 to-red-500 border-b-4 border-orange-700 hover:shadow-lg hover:bg-gradient-to-b rounded-lg px-5 py-2 text-base flex text-center w-[256px] h-[256px] flex-col justify-center gap-4"
+            >
+              <div className="flex flex-col justify-center">
+                <div className="text-lg">View Collection -&gt;</div>
+              </div>
+            </Link>
           </div>
         </section>
       </div>

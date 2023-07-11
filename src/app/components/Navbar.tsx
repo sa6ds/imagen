@@ -5,35 +5,33 @@ import Logo from "../assets/ImagenLogo.svg";
 import { useEffect, useState } from "react";
 
 function Navbar() {
-  const [theme, setTheme] = useState<"dark" | "light" | null>(() => {
-    // TODO: Fix flicker on first
-    if (typeof window !== "undefined") {
-      const storedTheme = localStorage.getItem("theme");
-      return storedTheme === "dark" ? "dark" : "light";
-    }
-    return null;
-  });
+  const [theme, setTheme] = useState<"dark" | "light" | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    const storedTheme = localStorage.getItem("theme");
+    setTheme(storedTheme === "dark" ? "dark" : "light");
+  }, []);
+
+  useEffect(() => {
+    // TODO: Fix flicker on refresh
+    if (theme) {
       if (theme === "dark") {
         document.documentElement.classList.add("dark");
       } else {
         document.documentElement.classList.remove("dark");
       }
-      localStorage.setItem("theme", theme || "");
+      localStorage.setItem("theme", theme);
     }
   }, [theme]);
 
   const handleThemeSwitch = () => {
     setTheme(theme === "dark" ? "light" : "dark");
-    console.log("HandleThemeSwitch");
   };
 
   return (
     <div className="container mx-auto px-12 py-12">
       <header className="flex w-full">
-        <div className="flex flex-row items-center space-x-3">
+        <div className="flex flex-row items-center">
           <Link href="/">
             <Image
               src={Logo}
@@ -43,13 +41,12 @@ function Navbar() {
               alt="Imagen Logo"
             ></Image>
           </Link>
-          <h1 className="dark:text-white font-bold tracking-tighter text-xl my-auto ">
+          <h1 className="dark:text-white px-4 font-bold tracking-tighter text-xl my-auto ">
             Imagen.lol
           </h1>
         </div>
         <div className="my-auto ml-auto">
           <button onClick={handleThemeSwitch}>
-            {/* TODO: Fix theme state resetting on refresh */}
             {theme === "dark" ? (
               <svg
                 className="w-5 h-5 stroke-slate-400 dark:stroke-slate-300"

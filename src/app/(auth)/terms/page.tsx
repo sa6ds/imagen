@@ -7,7 +7,7 @@ const Terms = () => {
       <h1 className="text-3xl tracking-tight font-bold sm:text-2xl md:text-3xl lg:text-4xl text-slate-900 dark:text-white ">
         Terms and Conditions
       </h1>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-6">
+      <p className=" whitespace-pre-line leading-relaxed mt-6">
         These terms and conditions outline the rules and regulations for the use
         of Imagen&apos;s Website, located at{" "}
         <Link
@@ -38,7 +38,7 @@ const Terms = () => {
       <h2 className="text-xl font-medium text-slate-900 dark:text-white mt-6">
         Cookies
       </h2>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-3">
+      <p className=" whitespace-pre-line leading-relaxed mt-3">
         We employ the use of cookies. By accessing Imagen, you agreed to use
         cookies in agreement with the Imagen&apos;s Privacy Policy. Most
         interactive websites use cookies to let us retrieve the user&apos;s
@@ -50,20 +50,20 @@ const Terms = () => {
       <h2 className="text-xl font-medium text-slate-900 dark:text-white mt-6">
         License
       </h2>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3 leading-relaxed">
+      <p className=" whitespace-pre-line mt-3 leading-relaxed">
         Unless otherwise stated, Imagen and/or its licensors own the
         intellectual property rights for all material on Imagen. All
         intellectual property rights are reserved. You may access this from
         Imagen for your own personal use subjected to restrictions set in these
         terms and conditions. You must not:
       </p>
-      <ul className="list-disc list-inside leading-relaxed text-slate-700 mt-5 dark:text-slate-400">
+      <ul className="list-disc list-inside leading-relaxed mt-5">
         <li>Republish material from Imagen</li>
         <li>Sell, rent or sub-license material from Imagen</li>
         <li>Reproduce, duplicate or copy material from Imagen</li>
         <li>Redistribute content from Imagen</li>
       </ul>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className="mt-5 whitespace-pre-line leading-relaxed">
         Parts of this website offer an opportunity for users to post and
         exchange opinions and information in certain areas of the website.
         Imagen does not filter, edit, publish or review Comments prior to their
@@ -78,7 +78,7 @@ const Terms = () => {
         inappropriate, offensive or causes breach of these Terms and Conditions.
         You warrant and represent that:
       </p>
-      <ul className="list-disc list-inside leading-relaxed text-slate-700 mt-5 dark:text-slate-400">
+      <ul className="list-disc list-inside leading-relaxed mt-5">
         <li>
           You are entitled to post the Comments on our website and have all
           necessary licenses and consents to do so;
@@ -97,7 +97,7 @@ const Terms = () => {
           or present commercial activities or unlawful activity.
         </li>
       </ul>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className="mt-5  whitespace-pre-line leading-relaxed">
         You hereby grant Imagen a non-exclusive license to use, reproduce, edit
         and authorize others to use, reproduceand edit any of your Comments in
         any and all forms, formats, or media.
@@ -105,11 +105,11 @@ const Terms = () => {
       <h2 className="text-xl font-medium text-slate-900 dark:text-white mt-6">
         Hyperlinking to our Content
       </h2>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3 leading-relaxed">
+      <p className=" whitespace-pre-line mt-3 leading-relaxed">
         The following organizations may link to our Website without prior
         written approval:
       </p>
-      <ul className="list-disc list-inside leading-relaxed text-slate-700 dark:text-slate-400">
+      <ul className="list-disc list-inside leading-relaxed ">
         <li>Government agencies;</li>
         <li>Search engines;</li>
         <li>News organizations;</li>
@@ -124,18 +124,18 @@ const Terms = () => {
           which may not hyperlink to our Web site.
         </li>
       </ul>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className=" mt-5 whitespace-pre-line leading-relaxed">
         These organizations may link to our home page, to publications, or to
         other Website information so long as the link: (a) is not in any way
         deceptive; (b) does not falsely imply sponsorship, endorsement or
         approval of the linking party and its products and/or services; and (c)
         fits within the context of the linking party&apos;s site.
       </p>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className=" mt-5 whitespace-pre-line leading-relaxed">
         We may consider and approve other link requests from the following types
         of organizations:
       </p>
-      <ul className="list-disc list-inside leading-relaxed text-slate-700 dark:text-slate-400">
+      <ul className="list-disc list-inside leading-relaxed ">
         <li>commonly-known consumer and/or business information sources;</li>
         <li>dot.com community sites;</li>
         <li>associations or other groups representing charities;</li>
@@ -144,7 +144,7 @@ const Terms = () => {
         <li>accounting, law and consulting firms; and</li>
         <li>educational institutions and trade associations.</li>
       </ul>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className=" mt-5 dark:text-slate-200 whitespace-pre-line leading-relaxed">
         We will approve link requests from these organizations if we decide
         that: (a) the link would not make us look unfavorably to ourselves or to
         our accredited businesses; (b) the organization does not have any
@@ -152,14 +152,14 @@ const Terms = () => {
         the hyperlink compensates the absence of Imagen; and (d) the link is in
         the context of general resource information.
       </p>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className=" mt-5 dark:text-slate-200 whitespace-pre-line leading-relaxed">
         These organizations may link to our home page so long as the link: (a)
         is not in any way deceptive; (b) does not falsely imply sponsorship,
         endorsement or approval of the linking party and its products or
         services; and (c) fits within the context of the linking party&apos;s
         site.
       </p>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className="mt-5 whitespace-pre-line leading-relaxed">
         If you are one of the organizations listed in paragraph 2 above and are
         interested in linking to our website, you must inform us by sending an
         e-mail to Imagen. Please include your name, your organization name,
@@ -167,11 +167,11 @@ const Terms = () => {
         from which you intend to link to our Website, and a list of the URLs on
         our site to which you would like to link.
       </p>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className=" mt-5 dark:text-slate-200 whitespace-pre-line leading-relaxed">
         Wait 2-3 weeks for a response. Approved organizations may hyperlink to
         our Website as follows:
       </p>
-      <ul className="list-disc list-inside leading-relaxed text-slate-700 dark:text-slate-400">
+      <ul className="list-disc list-inside leading-relaxed ">
         <li>By use of our corporate name; or</li>
         <li>By use of the uniform resource locator being linked to; or</li>
         <li>
@@ -180,19 +180,19 @@ const Terms = () => {
           party&apos;s site.
         </li>
       </ul>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className=" whitespace-pre-line leading-relaxed">
         No use of Imagen&apos;s logo or other artwork will be allowed for
         linking absent a trademark license agreement.
       </p>
       <h2 className="text-xl font-medium text-slate-900 dark:text-white mt-6">
         iFrames
       </h2>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-3">
+      <p className=" whitespace-pre-line leading-relaxed mt-3">
         Without prior approval and written permission, you may not create frames
         around our Webpages that alter in any way the visual presentation or
         appearance of our Website.
       </p>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-5">
+      <p className=" whitespace-pre-line leading-relaxed mt-5">
         We shall not be hold responsiblefor any content that appears on your
         Website. You agree to protect and defend us against all claims that
         arise on your Website. No link(s) should appear on any Website that may
@@ -203,10 +203,10 @@ const Terms = () => {
       <h2 className="text-xl font-medium text-slate-900 dark:text-white mt-6">
         Reservation of Rights
       </h2>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-3">
+      <p className=" whitespace-pre-line leading-relaxed mt-3">
         Please read Privacy Policy.
       </p>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-5">
+      <p className=" whitespace-pre-line leading-relaxed mt-5">
         We reserve the right to request that you remove all links or any
         particular link to our Website. You agree to immediately remove all
         links to our Website upon request. We also reserve the right to amend
@@ -218,13 +218,13 @@ const Terms = () => {
       <h2 className="text-xl font-medium text-slate-900 dark:text-white mt-6">
         Removal of links from our website
       </h2>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-3">
+      <p className=" whitespace-pre-line leading-relaxed mt-3">
         If you find any link on our Website that is offensive for any reason,
         you are free to contact and inform us at any moment. We will consider
         requests to remove links, but we are not obligated to do so or to
         respond to you directly.
       </p>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-5">
+      <p className=" whitespace-pre-line leading-relaxed mt-5">
         We do not ensure that the information on this website is correct, we do
         not warrant its completeness or accuracy; nor do we promise to ensure
         that the website remains available or that the material on the website
@@ -234,12 +234,12 @@ const Terms = () => {
       <h2 className="text-xl font-medium text-slate-900 dark:text-white mt-6">
         Disclaimer
       </h2>
-      <p className="text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-3">
+      <p className=" whitespace-pre-line leading-relaxed mt-3">
         To the maximum extent permitted by applicable law, we exclude all
         representations, warranties, and conditions relating to our website and
         the use of this website. Nothing in this disclaimer will:
       </p>
-      <ul className="list-disc list-inside leading-relaxed text-slate-700 dark:text-slate-400">
+      <ul className="list-disc list-inside leading-relaxed ">
         <li>
           limit or exclude our or your liability for death or personal injury;
         </li>
@@ -256,14 +256,14 @@ const Terms = () => {
           applicable law.
         </li>
       </ul>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className=" mt-5 whitespace-pre-line leading-relaxed">
         The limitations and prohibitions of liability set in this Section and
         elsewhere in this disclaimer: (a) are subject to the preceding
         paragraph; and (b) govern all liabilities arising under the disclaimer,
         including liabilities arising in contract, in tort, and for breach of
         statutory duty.
       </p>
-      <p className="text-slate-700 mt-5 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+      <p className=" mt-5 whitespace-pre-line leading-relaxed">
         As long as the website and the information and services on the website
         are provided free of charge, we will not be liable for any loss or
         damage of any nature.

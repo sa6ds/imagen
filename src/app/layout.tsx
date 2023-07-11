@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={` ${inter.className} dark:bg-slate-900 bg-slate-50 min-h-[100vh]`}
+        className={` ${inter.className} dark:bg-slate-900 m-0 text-slate-700 dark:text-slate-200 bg-slate-50 min-h-[100vh]`}
       >
         <ConvexClientProvider>
           <Navbar />

@@ -6,7 +6,7 @@ const Privacy = () => {
       <h1 className=" text-3xl tracking-tight sm:text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold dark:text-white">
         Privacy Policy
       </h1>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-6">
+      <p className=" -pre-line leading-relaxed mt-6">
         At Imagen, accessible from www.Imagen.lol, one of our main priorities is
         the privacy of our visitors. This Privacy Policy document contains types
         of information that is collected and recorded by Imagen and how we use
@@ -21,14 +21,14 @@ const Privacy = () => {
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         Consent
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line leading-relaxed mt-3">
+      <p className=" -pre-line leading-relaxed mt-3">
         By using our website, you hereby consent to our Privacy Policy and agree
         to its terms.
       </p>
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         Information we collect
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         The personal information that you are asked to provide, and the reasons
         why you are asked to provide it, will be made clear to you at the point
         we ask you to provide your personal information. If you contact us
@@ -42,39 +42,35 @@ const Privacy = () => {
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         How we use your information
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         We use the information we collect in various ways, including to:
       </p>
       <ul className="list-disc list-inside leading-relaxed ">
-        <li className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+        <li className=" -pre-line mt-3">
           Provide, operate, and maintain our website
         </li>
-        <li className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+        <li className=" -pre-line mt-3">
           Improve, personalize, and expand our website
         </li>
-        <li className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+        <li className=" -pre-line mt-3">
           Understand and analyze how you use our website
         </li>
-        <li className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+        <li className=" -pre-line mt-3">
           Develop new products, services, features, and functionality
         </li>
-        <li className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+        <li className=" -pre-line mt-3">
           Communicate with you, either directly or through one of our partners,
           including for customer service, to provide you with updates and other
           information relating to the website, and for marketing and promotional
           purposes
         </li>
-        <li className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
-          Send you emails
-        </li>
-        <li className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
-          Find and prevent fraud
-        </li>
+        <li className=" -pre-line mt-3">Send you emails</li>
+        <li className=" -pre-line mt-3">Find and prevent fraud</li>
       </ul>
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         Log Files
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         Imagen follows a standard procedure of using log files. These files log
         visitors when they visit websites. All hosting companies do this and a
         part of hosting services analytics. The information collected by log
@@ -88,7 +84,7 @@ const Privacy = () => {
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         Cookies and Web Beacons
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         Like any other website, Imagen uses &apos;cookies&apos;. These cookies
         are used to store information including visitors preferences, and the
         pages on the website that the visitor accessed or visited. The
@@ -99,7 +95,7 @@ const Privacy = () => {
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         Advertising Partners Privacy Policies
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         You may consult this list to find the Privacy Policy for each of the
         advertising partners of Imagen. Third-party ad servers or ad networks
         uses technologies like cookies, JavaScript, or Web Beacons that are used
@@ -114,7 +110,7 @@ const Privacy = () => {
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         Third Party Privacy Policies
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         Imagen&apos;s Privacy Policy does not apply to other advertisers or
         websites. Thus, we are advising you to consult the respective Privacy
         Policies of these third-party ad servers for more detailed information.
@@ -127,7 +123,7 @@ const Privacy = () => {
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         CCPA Privacy Rights (Do Not Sell My Personal Information)
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         Under the CCPA, among other rights, California consumers have the right
         to: Request that a business that collects a consumer&apos;s personal
         data disclose the categories and specific pieces of personal data that a
@@ -141,7 +137,7 @@ const Privacy = () => {
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         GDPR Data Protection Rights
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         We would like to make sure you are fully aware of all of your data
         protection rights. The right to access - You have the right to request
         copies of your personal data. We may charge you a small fee for this
@@ -163,7 +159,7 @@ const Privacy = () => {
       <h2 className=" text-xl font-medium text-slate-900 dark:text-white mt-6">
         Children&apos;s Information
       </h2>
-      <p className=" text-slate-700 dark:text-slate-400 whitespace-pre-line mt-3">
+      <p className=" -pre-line mt-3">
         Another part of our priority is adding protection for children while
         using the internet. We encourage parents and guardians to observe,
         participate in, and/or monitor and guide their online activity. Imagen

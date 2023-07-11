@@ -6,10 +6,10 @@ const Home = () => {
       <div className="mt-0 lg:mt-20 lg:text-center lg:mx-5">
         {/* Introduction */}
         <div className="relative z-50">
-          <h1 className="dark:text-white z-50 pb-8 tracking-tighter text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
+          <h1 className="dark:text-white text-slate-900 z-50 pb-8 tracking-tighter text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
             Generate images with a click of a button!
           </h1>
-          <p className="dark:text-slate-200 z-50 lg:mx-24 mb-16 text-slate-700">
+          <p className="z-50 lg:mx-24 mb-16">
             Ignite your imagination with sketches that come to life. Our
             intuitive AI web app transforms your drawings into breathtaking
             images, making artistic dreams a reality.

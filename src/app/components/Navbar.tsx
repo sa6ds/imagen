@@ -41,7 +41,7 @@ function Navbar() {
               alt="Imagen Logo"
             ></Image>
           </Link>
-          <h1 className="dark:text-white px-4 font-bold tracking-tighter text-xl my-auto ">
+          <h1 className="dark:text-white text-slate-900 px-4 font-bold tracking-tighter text-xl my-auto ">
             Imagen.lol
           </h1>
         </div>

@@ -2,15 +2,18 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "../../../convex/_generated/react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { RiseLoader } from "react-spinners";
 import Link from "next/link";
+import Filter from "bad-words";
 
 export default function Home() {
   const saveSketchMutation = useMutation("sketches:saveSketch");
   const sketchesQuery = useQuery("sketches:getSketches");
+  const [hasError, setHasError] = useState(false);
+  const filter = new Filter();
 
   const {
     register,
@@ -38,11 +41,28 @@ export default function Home() {
           className="flex flex-col gap-2 w-fit mx-auto"
           onSubmit={handleSubmit(async (formData) => {
             if (!canvasRef.current) return;
+
+            const prompt = formData.prompt.trim();
+
+            if (filter.isProfane(prompt)) {
+              setHasError(true);
+              return;
+            }
+
+            setHasError(false);
+
             const image = await canvasRef.current?.exportImage("jpeg");
             const results = await saveSketchMutation({ ...formData, image });
           })}
         >
           <span className="text-slate-700 dark:text-slate-200">Prompt</span>
+          {hasError && (
+            <div className="bg-red-300 rounded-lg p-3">
+              <p className="text-red-800">
+                &#x2022; Your prompt contains bad words.
+              </p>
+            </div>
+          )}
           <input
             required
             className="rounded-md focus:shadow-lg shadow-md p-2 text-slate-900 border"
@@ -88,7 +108,7 @@ export default function Home() {
                 </div>
               ) : (
                 <div
-                  className="border-2 rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center"
+                  className="border rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center"
                   key={sketch._id.toString()}
                 >
                   <RiseLoader color="#f97316" speedMultiplier={1} />

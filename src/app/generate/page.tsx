@@ -65,7 +65,7 @@ export default function Home() {
           )}
           <input
             required
-            className="rounded-md focus:shadow-lg shadow-md p-2 border"
+            className="rounded-md text-slate-700 focus:shadow-lg shadow-md p-2 border"
             {...register("prompt", { required: true })}
           />
           <span className="font-semibold">Canvas (Draw something below)</span>
@@ -91,12 +91,12 @@ export default function Home() {
           ></input>
         </form>
 
-        <section className="mt-10 lg:mt-0">
+        <section className="mt-10 w-full lg:mt-0">
           <h2 className="font-semibold text-center mb-4 lg:mb-2 lg:text-left">
             Latest Sketches
           </h2>
           <div className="flex flex-wrap justify-center lg:justify-normal gap-4 ">
-            {sortedSketches.map((sketch) =>
+            {sortedSketches.map((sketch, index) =>
               sketch && sketch.result ? (
                 <div key={sketch._id.toString()} className="shadow-lg">
                   <Image
@@ -108,24 +108,13 @@ export default function Home() {
                 </div>
               ) : (
                 <div
-                  className="border rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center"
+                  className="border h-[256px] rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center"
                   key={sketch._id.toString()}
                 >
                   <RiseLoader color="#f97316" speedMultiplier={1} />
                 </div>
               )
             )}
-            <Link
-              href={"/collection"}
-              type="button"
-              className="transition duration-50 ease-in-out delay-100 text-white bg-gradient-to-b from-orange-500 to-red-500 border-b-4 border-orange-700 hover:shadow-lg hover:bg-gradient-to-b rounded-lg px-5 py-2 text-base flex text-center w-[256px] h-[256px] flex-col justify-center gap-4"
-            >
-              <div className="flex flex-col justify-center">
-                <div className="text-lg font-semibold">
-                  View Collection -&gt;
-                </div>
-              </div>
-            </Link>
           </div>
         </section>
       </div>

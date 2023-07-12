@@ -7,6 +7,7 @@ const Terms = () => {
       <h1 className="text-3xl tracking-tight font-bold sm:text-2xl md:text-3xl lg:text-4xl text-slate-900 dark:text-white ">
         Terms and Conditions
       </h1>
+      
       <p className=" whitespace-pre-line leading-relaxed mt-6">
         These terms and conditions outline the rules and regulations for the use
         of Imagen&apos;s Website, located at{" "}

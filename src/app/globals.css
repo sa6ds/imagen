@@ -2,14 +2,4 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  /* text-slate-900 */
-  --tw-text-opacity: 1;
-  color: rgb(15 23 42 / var(--tw-text-opacity));
-}
 
-/* 
-Main text color: text-slate-900
-Secondary text-color: text-slate-500
-*/

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useQuery } from "../../../convex/_generated/react";
+import { RiseLoader } from "react-spinners";
 
 export default function Home() {
   const saveSketchMutation = useQuery("sketches:getSketches");
@@ -18,15 +19,21 @@ export default function Home() {
       <div className="flex flex-wrap justify-center gap-4">
         {sortedSketches.map((sketch) => (
           <div className="w-64" key={sketch._id.toString()}>
-            {sketch.result && (
+            {sketch.result && sketch ? (
               <Image
                 width="256"
                 height="256"
                 src={sketch.result}
                 alt={`Sketch of ${sketch.prompt}`}
               />
+            ) : (
+              <div
+                className="border h-[256px] rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center"
+                key={sketch._id.toString()}
+              >
+                <RiseLoader color="#f97316" speedMultiplier={1} />
+              </div>
             )}
-            {sketch.prompt && <p>{sketch.prompt}</p>}
           </div>
         ))}
       </div>

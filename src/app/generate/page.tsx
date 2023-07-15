@@ -64,6 +64,7 @@ export default function Home() {
             </div>
           )}
           <input
+            maxLength={60}
             required
             className="rounded-md text-slate-700 focus:shadow-lg shadow-md p-2 border"
             {...register("prompt", { required: true })}
@@ -132,4 +133,3 @@ export default function Home() {
     </main>
   );
 }
-

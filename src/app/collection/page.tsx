@@ -34,6 +34,7 @@ export default function Home() {
                 <RiseLoader color="#f97316" speedMultiplier={1} />
               </div>
             )}
+            {sketch.prompt && <p className="text-center">{sketch.prompt}</p>}
           </div>
         ))}
       </div>

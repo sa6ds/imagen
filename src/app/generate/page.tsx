@@ -88,7 +88,7 @@ export default function Home() {
           </button>
           <input
             type="submit"
-            className="hover:shadow-lg  shadow-md relative w-full border-grey-100 mx-auto rounded-lg border-b-4 border-orange-700 bg-gradient-to-b from-orange-500 to-red-500 px-8 py-1 text-white ease-in-out"
+            className="hover:shadow-lg cursor-pointer shadow-md relative w-full border-grey-100 mx-auto rounded-lg border-b-4 border-orange-700 bg-gradient-to-b from-orange-500 to-red-500 px-8 py-1 text-white ease-in-out"
           ></input>
         </form>
 

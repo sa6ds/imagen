@@ -1,5 +1,9 @@
 # Imagen
 
+🛠️ Active Development: Transitioning to Convex's Latest Release 🛠️
+
+This project is actively being updated to leverage the newest features and improvements in the latest Convex version. Stay tuned for the new, enhanced experience!
+
 [![Website](https://img.shields.io/badge/Website-imagen.lol-brightgreen?style=flat-square)](https://www.imagen.lol)
 
 

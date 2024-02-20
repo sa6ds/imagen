@@ -1,15 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { useQuery } from "../../../convex/_generated/react";
+import { api } from "../../../convex/_generated/api";
+import { useQuery } from "convex/react";
+
 import { RiseLoader } from "react-spinners";
 
 export default function Home() {
-  const saveSketchMutation = useQuery("sketches:getSketches");
+  const sketches = useQuery(api.sketches.getSketches);
 
-  const sortedSketches = (saveSketchMutation ?? []).sort((a, b) => {
+  const sortedSketches = (sketches ?? []).sort((a, b) => {
     return b._creationTime - a._creationTime;
   });
+
 
   return (
     <main className="container mx-auto px-16 py-12 flex flex-col items-center justify-between">

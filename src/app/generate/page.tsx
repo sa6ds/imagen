@@ -1,6 +1,7 @@
 "use client";
+import { api } from "../../../convex/_generated/api";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery } from "../../../convex/_generated/react";
+import { useMutation, useQuery } from "convex/react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useRef, useState } from "react";
 import Head from "next/head";
@@ -10,8 +11,8 @@ import Link from "next/link";
 import Filter from "bad-words";
 
 export default function Home() {
-  const saveSketchMutation = useMutation("sketches:saveSketch");
-  const sketchesQuery = useQuery("sketches:getSketches");
+  const saveSketchMutation = useMutation(api.sketches.saveSketch);
+  const sketchesQuery = useQuery(api.sketches.getSketches);
   const [hasError, setHasError] = useState(false);
   const filter = new Filter();
 

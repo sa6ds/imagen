@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import ConvexClientProvider from "./ConvexClientProvider";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import { themeEffect } from "./components/theme/themeEffect";
+import { themeEffect } from "./themeEffect";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -8,13 +8,14 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import User from "./User";
+import { useRouter } from "next/navigation";
 
 type CombinedUser = FirebaseUser & User;
 
 export function useAuthUser() {
   const [user, setUser] = useState<CombinedUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isBanned, setIsBanned] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -24,6 +25,13 @@ export function useAuthUser() {
 
         if (userSnapshot.exists()) {
           const userData = userSnapshot.data() as User;
+          if (!userData.isActive) {
+            alert(
+              "Your account has been deactivated. Contact us for more information."
+            );
+            await signOut(auth);
+            return; // Return early if user is banned
+          }
           setUser({ ...firebaseUser, ...userData });
         } else {
           setUser(firebaseUser as CombinedUser);
@@ -37,15 +45,6 @@ export function useAuthUser() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (user && !user.isActive) {
-      setIsBanned(true);
-      alert("You are banned from using this service.");
-      signOut(auth);
-      setUser(null);
-    }
-  }, [user]);
-
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -56,9 +55,13 @@ export function useAuthUser() {
 
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data() as User;
-        setUser({ ...firebaseUser, ...userData });
-      } else {
-        setUser(firebaseUser as CombinedUser);
+        if (!userData.isActive) {
+          alert(
+            "Your account has been deactivated. Contact us for more information."
+          );
+          await signOut(auth);
+          return; // Return early if user is banned
+        }
       }
 
       await setDoc(
@@ -70,6 +73,9 @@ export function useAuthUser() {
         },
         { merge: true }
       );
+
+      setUser({ ...firebaseUser, isActive: true } as CombinedUser);
+      router.push("/generate");
     } catch (error) {
       console.error(error);
     }
@@ -84,5 +90,5 @@ export function useAuthUser() {
     }
   };
 
-  return { user, signInWithGoogle, handleLogout, loading, isBanned };
+  return { user, signInWithGoogle, handleLogout, loading };
 }

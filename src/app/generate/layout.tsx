@@ -1,5 +1,4 @@
 "use client";
-
 import { useUser } from "../components/auth/useUser";
 import { ReactNode } from "react";
 import AuthGuard from "../components/auth/AuthGuard";

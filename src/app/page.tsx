@@ -32,7 +32,7 @@ const Home = () => {
                     href="/generate"
                     className="transition duration-50 ease-in-out delay-100 text-white font-medium bg-gradient-to-b from-orange-500 to-red-500 border-b-4 border-orange-700 hover:shadow-lg hover:bg-gradient-to-b rounded-lg px-5 py-2 text-base"
                   >
-                    Generate
+                    Generate Now
                   </Link>
                 ) : (
                   <button

@@ -4,7 +4,7 @@ import { useAuthUser } from "./auth/useAuthUser";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "../assets/ImagenLogo.svg";
-import { ThemeToggle } from "./theme/themeToggle";
+import { ThemeToggle } from "../themeToggle";
 
 function Navbar() {
   const { user, signInWithGoogle, handleLogout } = useAuthUser();

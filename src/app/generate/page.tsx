@@ -10,7 +10,7 @@ import { RiseLoader } from "react-spinners";
 import Link from "next/link";
 import Filter from "bad-words";
 
-export default function Home() {
+function GeneratePage() {
   const saveSketchMutation = useMutation(api.sketches.saveSketch);
   const sketchesQuery = useQuery(api.sketches.getSketches);
   const [hasError, setHasError] = useState(false);
@@ -19,6 +19,7 @@ export default function Home() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<{
     prompt: string;
@@ -54,6 +55,7 @@ export default function Home() {
 
             const image = await canvasRef.current?.exportImage("jpeg");
             const results = await saveSketchMutation({ ...formData, image });
+            reset();
           })}
         >
           <span className="font-semibold">Prompt</span>
@@ -134,3 +136,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default GeneratePage;

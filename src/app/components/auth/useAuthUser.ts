@@ -70,6 +70,7 @@ export function useAuthUser() {
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
           isActive: true,
+          prompts: [], // Ensure prompts field is initialized
         },
         { merge: true }
       );

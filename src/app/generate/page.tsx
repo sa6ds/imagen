@@ -9,13 +9,16 @@ import Image from "next/image";
 import { RiseLoader } from "react-spinners";
 import Link from "next/link";
 import Filter from "bad-words";
+import { useAuthUser } from "../components/auth/useAuthUser";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../Firebase";
 
 function GeneratePage() {
   const saveSketchMutation = useMutation(api.sketches.saveSketch);
   const sketchesQuery = useQuery(api.sketches.getSketches);
   const [hasError, setHasError] = useState(false);
   const filter = new Filter();
-
+  const { user } = useAuthUser(); // Get current user
   const {
     register,
     handleSubmit,
@@ -33,6 +36,37 @@ function GeneratePage() {
     })
     .slice(0, 7);
 
+  const handlePromptSubmit = async (formData: { prompt: string }) => {
+    if (!canvasRef.current) return;
+
+    const prompt = formData.prompt.trim();
+
+    if (filter.isProfane(prompt)) {
+      setHasError(true);
+      return;
+    }
+
+    setHasError(false);
+
+    // Save sketch
+    const image = await canvasRef.current?.exportImage("jpeg");
+    const results = await saveSketchMutation({ ...formData, image });
+
+    // Update user's prompts in the database
+    if (user) {
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(
+        userRef,
+        {
+          prompts: [...user.prompts, formData.prompt],
+        },
+        { merge: true }
+      );
+    }
+
+    reset();
+  };
+
   return (
     <main className="container mx-auto px-16 py-12 flex flex-col items-center justify-between pt-8 dark:text-slate-200">
       <Head>
@@ -41,22 +75,7 @@ function GeneratePage() {
       <div className="container mx-auto lg:flex gap-16">
         <form
           className="flex flex-col gap-2 w-fit mx-auto"
-          onSubmit={handleSubmit(async (formData) => {
-            if (!canvasRef.current) return;
-
-            const prompt = formData.prompt.trim();
-
-            if (filter.isProfane(prompt)) {
-              setHasError(true);
-              return;
-            }
-
-            setHasError(false);
-
-            const image = await canvasRef.current?.exportImage("jpeg");
-            const results = await saveSketchMutation({ ...formData, image });
-            reset();
-          })}
+          onSubmit={handleSubmit(handlePromptSubmit)} // Use handlePromptSubmit instead of handleSubmit
         >
           <span className="font-semibold">Prompt</span>
           {hasError && (

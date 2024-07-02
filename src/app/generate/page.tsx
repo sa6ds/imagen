@@ -1,25 +1,43 @@
 "use client";
+
 import { api } from "../../../convex/_generated/api";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "convex/react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { RiseLoader } from "react-spinners";
 import Link from "next/link";
 import Filter from "bad-words";
+import { useAuthUser } from "../components/auth/useAuthUser";
+
+function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<F>): void => {
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => func(...args), waitFor);
+  };
+}
 
 function GeneratePage() {
   const saveSketchMutation = useMutation(api.sketches.saveSketch);
   const sketchesQuery = useQuery(api.sketches.getSketches);
   const [hasError, setHasError] = useState(false);
+  const [charCount, setCharCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeButton, setActiveButton] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const filter = new Filter();
-
+  const { user, logRejectedPrompt, logAcceptedPrompt } = useAuthUser();
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<{
     prompt: string;
@@ -31,7 +49,129 @@ function GeneratePage() {
     .sort((a, b) => {
       return b._creationTime - a._creationTime;
     })
-    .slice(0, 7);
+    .slice(0, 5);
+
+  const promptValue = watch("prompt");
+
+  useEffect(() => {
+    setCharCount(promptValue ? promptValue.length : 0);
+  }, [promptValue]);
+
+  const debouncedProfanityCheck = debounce((value: string) => {
+    if (filter.isProfane(value.trim())) {
+      setHasError(true);
+    } else {
+      setHasError(false);
+    }
+  }, 300);
+
+  useEffect(() => {
+    if (promptValue) {
+      debouncedProfanityCheck(promptValue);
+    }
+  }, [promptValue]);
+
+  const handlePromptSubmit = async (formData: { prompt: string }) => {
+    if (!user || !user.isActive) {
+      alert("Your account is not active. Please contact support.");
+      return;
+    }
+
+    if (!canvasRef.current) return;
+
+    const prompt = formData.prompt.trim();
+
+    if (filter.isProfane(prompt)) {
+      setHasError(true);
+      canvasRef.current?.clearCanvas();
+      reset();
+      const isStillActive = await logRejectedPrompt(prompt);
+      if (!isStillActive) {
+        alert(
+          "Your account has been deactivated due to multiple violations. Please contact support."
+        );
+      }
+      return;
+    }
+
+    setHasError(false);
+    setIsLoading(true);
+
+    try {
+      const image = await canvasRef.current?.exportImage("jpeg");
+      const results = await saveSketchMutation({ ...formData, image });
+      await logAcceptedPrompt(formData.prompt);
+      canvasRef.current?.clearCanvas();
+      reset();
+    } catch (error) {
+      console.error("Error submitting prompt:", error);
+      alert(
+        "An error occurred while submitting your prompt. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    // If the target is an input or textarea, don't prevent default behavior
+    if (
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement
+    ) {
+      return;
+    }
+
+    // For other elements, prevent default and handle shortcuts
+    e.preventDefault();
+
+    switch (e.key.toLowerCase()) {
+      case "c":
+        canvasRef.current?.clearCanvas();
+        setActiveButton("clear");
+        setTimeout(() => setActiveButton(null), 200);
+        break;
+      case "z":
+        canvasRef.current?.undo();
+        setActiveButton("undo");
+        setTimeout(() => setActiveButton(null), 200);
+        break;
+      case "x":
+        canvasRef.current?.redo();
+        setActiveButton("redo");
+        setTimeout(() => setActiveButton(null), 200);
+        break;
+    }
+  };
+
+  const handleButtonClick = (
+    action: string,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    setActiveButton(action);
+    setTimeout(() => setActiveButton(null), 200);
+    switch (action) {
+      case "clear":
+        canvasRef.current?.clearCanvas();
+        break;
+      case "undo":
+        canvasRef.current?.undo();
+        break;
+      case "redo":
+        canvasRef.current?.redo();
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <main className="container mx-auto px-16 py-12 flex flex-col items-center justify-between pt-8 dark:text-slate-200">
@@ -41,60 +181,93 @@ function GeneratePage() {
       <div className="container mx-auto lg:flex gap-16">
         <form
           className="flex flex-col gap-2 w-fit mx-auto"
-          onSubmit={handleSubmit(async (formData) => {
-            if (!canvasRef.current) return;
-
-            const prompt = formData.prompt.trim();
-
-            if (filter.isProfane(prompt)) {
-              setHasError(true);
-              return;
+          onSubmit={handleSubmit(handlePromptSubmit)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSubmit(handlePromptSubmit)();
             }
-
-            setHasError(false);
-
-            const image = await canvasRef.current?.exportImage("jpeg");
-            const results = await saveSketchMutation({ ...formData, image });
-            reset();
-          })}
+          }}
         >
-          <span className="font-semibold">Prompt</span>
+          <label htmlFor="prompt" className="font-semibold">
+            Prompt
+          </label>
           {hasError && (
             <div className="bg-red-300 rounded-lg p-3">
               <p className="text-red-800">
-                &#x2022; Your prompt contains bad words.
+                &#x2022; Your prompt contains inappropriate words.
               </p>
             </div>
           )}
-          <input
-            maxLength={60}
-            required
-            className="rounded-md text-slate-700 focus:shadow-lg shadow-md p-2 border"
-            {...register("prompt", { required: true })}
-          />
-          <span className="font-semibold">Canvas (Draw something below)</span>
-          <ReactSketchCanvas
-            ref={canvasRef}
-            className="border shadow-md rounded-sm"
-            style={{ width: 256, height: 256 }}
-            strokeWidth={4}
-            strokeColor="black"
-          />
-          <button
-            className="text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg  shadow-md p-2"
-            type="button"
-            onClick={() => {
-              canvasRef.current?.clearCanvas();
-            }}
+          <div className="relative">
+            <input
+              id="prompt"
+              maxLength={60}
+              required
+              className="rounded-md text-slate-700 focus:shadow-lg shadow-md p-2 border pr-16"
+              {...register("prompt", { required: true })}
+              aria-label="Enter your prompt"
+            />
+            <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-gray-500">
+              {charCount}/60
+            </span>
+          </div>
+          <label htmlFor="canvas-container" className="font-semibold">
+            Canvas (Draw something below)
+          </label>
+          <div
+            id="canvas-container"
+            tabIndex={0}
+            className="focus:outline-none"
           >
-            Clear
-          </button>
-          <input
+            <ReactSketchCanvas
+              ref={canvasRef}
+              className="border shadow-md rounded-sm"
+              style={{ width: 256, height: 256 }}
+              strokeWidth={4}
+              strokeColor="black"
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={(e) => handleButtonClick("undo", e)}
+              title="Undo last stroke (Z)"
+              className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
+                activeButton === "undo" ? "btn-active" : ""
+              }`}
+            >
+              Undo
+            </button>
+            <button
+              onClick={(e) => handleButtonClick("redo", e)}
+              title="Redo last undone stroke (X)"
+              className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
+                activeButton === "redo" ? "btn-active" : ""
+              }`}
+            >
+              Redo
+            </button>
+            <button
+              onClick={(e) => handleButtonClick("clear", e)}
+              title="Clear canvas (C)"
+              className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
+                activeButton === "clear" ? "btn-active" : ""
+              }`}
+            >
+              Clear
+            </button>
+          </div>
+          <button
             type="submit"
-            className="hover:shadow-lg cursor-pointer shadow-md relative w-full border-grey-100 mx-auto rounded-lg border-b-4 border-orange-700 bg-gradient-to-b from-orange-500 to-red-500 px-8 py-1 text-white ease-in-out"
-          ></input>
+            disabled={isLoading}
+            className={`hover:shadow-lg cursor-pointer shadow-md relative w-full border-grey-100 mx-auto rounded-lg border-b-4 border-orange-700 bg-gradient-to-b from-orange-500 to-red-500 px-8 py-1 text-white ease-in-out ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            title="Submit (Enter)"
+          >
+            {isLoading ? "Submitting..." : "Submit"}
+          </button>
         </form>
-
         <section className="mt-10 lg:mt-0">
           <h2 className="font-semibold text-center mb-4 lg:mb-2 lg:text-left">
             Latest Sketches
@@ -102,13 +275,21 @@ function GeneratePage() {
           <div className="flex flex-wrap justify-center lg:justify-normal gap-4 ">
             {sortedSketches.map((sketch) =>
               sketch && sketch.result ? (
-                <div key={sketch._id.toString()} className="shadow-lg">
+                <div
+                  key={sketch._id.toString()}
+                  className="shadow-lg relative group"
+                >
                   <Image
                     width="256"
                     height="256"
                     src={sketch.result}
                     alt={`Sketch of ${sketch.prompt}`}
                   />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <p className="text-white text-center p-2">
+                      {sketch.prompt}
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div
@@ -133,6 +314,73 @@ function GeneratePage() {
           </div>
         </section>
       </div>
+
+      {/* Help button */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-4 right-4 bg-gradient-to-b from-orange-500 to-red-500 border-orange-700 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-orange-600 transition-colors duration-200"
+        aria-label="Keyboard Shortcuts"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </button>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-xs sm:max-w-md w-full">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">
+              Keyboard Shortcuts
+            </h2>
+            <ul className="space-y-4 text-gray-600">
+              <li className="flex items-center">
+                <span className="border border-orange-500 rounded px-2 font-mono font-semibold mr-3">
+                  Z
+                </span>
+                <span>Undo last stroke</span>
+              </li>
+              <li className="flex items-center">
+                <span className="border border-orange-500 rounded px-2 font-mono font-semibold mr-3">
+                  X
+                </span>
+                <span>Redo last undone stroke</span>
+              </li>
+              <li className="flex items-center">
+                <span className="border border-orange-500 rounded px-2 font-mono font-semibold mr-3">
+                  C
+                </span>
+                <span>Clear canvas</span>
+              </li>
+              <li className="flex items-center">
+                <span className="border border-orange-500 rounded px-2 py-0.5 font-mono font-semibold mr-3 text-sm">
+                  Enter
+                </span>
+                <span>Submit prompt</span>
+              </li>
+            </ul>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              // className="mt-6 bg-orange-500 rounded-md text-white px-4 py-2 hover:bg-orange-600 transition-colors duration-200"
+
+              className="text-white mt-6 bg-gradient-to-b from-orange-500 to-red-500 border-b-4 border-orange-700 hover:shadow-lg hover:bg-gradient-to-b rounded-lg px-4 py-2"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

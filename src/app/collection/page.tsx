@@ -13,7 +13,6 @@ export default function Home() {
     return b._creationTime - a._creationTime;
   });
 
-
   return (
     <main className="container mx-auto px-16 py-12 flex flex-col items-center justify-between">
       <h2 className="mb-12 dark:text-white text-slate-900 text-2xl font-semibold">

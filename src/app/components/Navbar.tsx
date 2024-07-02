@@ -23,7 +23,7 @@ function Navbar() {
             ></Image>
           </Link>
           <h1 className="dark:text-white text-slate-900 px-4 font-bold tracking-tighter text-xl my-auto ">
-            Imagen.lol
+            <Link href="/">Imagen.lol</Link>
           </h1>
         </div>
         <div className="flex my-auto ml-auto gap-2 md:gap-4">

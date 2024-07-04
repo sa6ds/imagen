@@ -6,7 +6,7 @@ const Home = () => {
   const { user, signInWithGoogle } = useAuthUser();
 
   return (
-    <main className="container mx-auto px-16 py-12">
+    <main className="container mx-auto sm:px-16 py-12">
       <div className="mt-0 lg:mt-20 lg:text-center lg:mx-5">
         <div className="relative z-50">
           <h1 className="dark:text-white text-slate-900 z-50 pb-8 tracking-tighter text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">

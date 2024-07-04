@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-16 py-12 flex flex-col items-center justify-between">
-      <h2 className="mb-12 dark:text-white text-slate-900 text-2xl font-semibold">
+      <h2 className="mb-12 text-center dark:text-white text-slate-900 text-2xl font-semibold">
         Community Sketches
       </h2>
       <div className="flex flex-wrap justify-center gap-4">

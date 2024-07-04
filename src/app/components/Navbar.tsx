@@ -10,7 +10,7 @@ function Navbar() {
   const { user, signInWithGoogle, handleLogout } = useAuthUser();
 
   return (
-    <div className="container mx-auto px-12 py-12">
+    <div className="container mx-auto xsm:px-12 py-12">
       <header className="flex w-full">
         <div className="flex flex-row items-center">
           <Link href="/">

@@ -43,7 +43,14 @@ function GeneratePage() {
     prompt: string;
   }>();
 
-  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+  const canvasRef = useRef<ReactSketchCanvasRef | null>(null);
+
+  const clearCanvasAndHistory = () => {
+    if (canvasRef.current) {
+      canvasRef.current.clearCanvas();
+      canvasRef.current.resetCanvas();
+    }
+  };
 
   const sortedSketches = (sketchesQuery ?? [])
     .sort((a, b) => {
@@ -101,7 +108,7 @@ function GeneratePage() {
       const image = await canvasRef.current?.exportImage("jpeg");
       const results = await saveSketchMutation({ ...formData, image });
       await logAcceptedPrompt(formData.prompt);
-      canvasRef.current?.clearCanvas();
+      clearCanvasAndHistory(); // Use the new method here
       reset();
     } catch (error) {
       console.error("Error submitting prompt:", error);
@@ -144,16 +151,13 @@ function GeneratePage() {
     }
   };
 
-  const handleButtonClick = (
-    action: string,
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleButtonClick = (action: string, e: React.MouseEvent) => {
     e.preventDefault();
     setActiveButton(action);
     setTimeout(() => setActiveButton(null), 200);
     switch (action) {
       case "clear":
-        canvasRef.current?.clearCanvas();
+        clearCanvasAndHistory();
         break;
       case "undo":
         canvasRef.current?.undo();
@@ -174,7 +178,7 @@ function GeneratePage() {
   }, []);
 
   return (
-    <main className="container mx-auto px-16 py-12 flex flex-col items-center justify-between pt-8 dark:text-slate-200">
+    <main className="sm:container mx-auto py-12 flex flex-col items-center justify-between pt-8 dark:text-slate-200">
       <Head>
         <title>Generate | Imagen</title>
       </Head>
@@ -318,7 +322,7 @@ function GeneratePage() {
       {/* Help button */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-4 right-4 bg-gradient-to-b from-orange-500 to-red-500 border-orange-700 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-orange-600 transition-colors duration-200"
+        className="fixed bottom-5 right-5 bg-gradient-to-b from-orange-500 to-red-500 border-orange-700 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-orange-600 transition-colors duration-200"
         aria-label="Keyboard Shortcuts"
       >
         <svg

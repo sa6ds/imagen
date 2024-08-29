@@ -4,13 +4,23 @@ import { api } from "../../../convex/_generated/api";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "convex/react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { RiseLoader } from "react-spinners";
 import Link from "next/link";
 import Filter from "bad-words";
 import { useAuthUser } from "../components/auth/useAuthUser";
+import axios from "axios";
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from "firebase/storage";
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { db, storage } from "../Firebase";
+import { Id } from "../../../convex/_generated/dataModel";
 
 function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
   let timeout: ReturnType<typeof setTimeout> | null = null;
@@ -26,6 +36,7 @@ function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
 function GeneratePage() {
   const saveSketchMutation = useMutation(api.sketches.saveSketch);
   const sketchesQuery = useQuery(api.sketches.getSketches);
+  const updateSketchResult = useMutation(api.sketches.updateSketchResult);
   const [hasError, setHasError] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +89,49 @@ function GeneratePage() {
     }
   }, [promptValue]);
 
+  const downloadAndStoreImage = async (
+    imageUrl: string,
+    sketchId: string
+  ): Promise<string> => {
+    try {
+      // Download the image
+      const response = await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+      const buffer = Buffer.from(response.data, "binary");
+
+      // Convert buffer to base64
+      const base64Image = buffer.toString("base64");
+
+      console.log("Storage instance:", storage);
+
+      // Upload to Firebase Storage
+      const storageRef = ref(storage, `sketches/${sketchId}`);
+      await uploadString(storageRef, base64Image, "base64", {
+        contentType: "image/jpeg",
+      });
+
+      // Get the download URL
+      const downloadURL = await getDownloadURL(storageRef);
+
+      // Update Firestore document with new URL
+      const sketchRef = doc(db, "sketches", sketchId);
+      await updateDoc(sketchRef, { result: downloadURL });
+
+      // Update Convex database with Firebase URL
+      await updateSketchResult({
+        sketchId: sketchId as Id<"sketches">,
+        result: imageUrl,
+        firebaseUrl: downloadURL,
+      });
+
+      return downloadURL;
+    } catch (error) {
+      console.error("Error downloading and storing image:", error);
+      throw error;
+    }
+  };
+
   const handlePromptSubmit = async (formData: { prompt: string }) => {
     if (!user || !user.isActive) {
       alert("Your account is not active. Please contact support.");
@@ -106,9 +160,32 @@ function GeneratePage() {
 
     try {
       const image = await canvasRef.current?.exportImage("jpeg");
-      const results = await saveSketchMutation({ ...formData, image });
+
+      // Call the Replicate API to generate the image
+      const replicateResponse = await saveSketchMutation({
+        ...formData,
+        image,
+      });
+
+      // Replace the type assertion with this:
+      const typedResponse = replicateResponse as unknown as {
+        result: string;
+        _id: string;
+      };
+
+      if (typedResponse.result && typedResponse._id) {
+        // Download and store the image
+        const storedImageUrl = await downloadAndStoreImage(
+          typedResponse.result,
+          typedResponse._id
+        );
+
+        // The Firestore document is already updated in downloadAndStoreImage function
+        console.log("Image stored successfully:", storedImageUrl);
+      }
+
       await logAcceptedPrompt(formData.prompt);
-      clearCanvasAndHistory(); // Use the new method here
+      clearCanvasAndHistory();
       reset();
     } catch (error) {
       console.error("Error submitting prompt:", error);
@@ -283,12 +360,19 @@ function GeneratePage() {
                   key={sketch._id.toString()}
                   className="shadow-lg relative group"
                 >
-                  <Image
-                    width="256"
-                    height="256"
-                    src={sketch.result}
-                    alt={`Sketch of ${sketch.prompt}`}
-                  />
+                  {sketch.firebaseUrl ? (
+                    <Image
+                      width="256"
+                      height="256"
+                      src={sketch.firebaseUrl}
+                      alt={`Sketch of ${sketch.prompt}`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="border h-[256px] rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center">
+                      <RiseLoader color="#f97316" speedMultiplier={1} />
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <p className="text-white text-center p-2">
                       {sketch.prompt}

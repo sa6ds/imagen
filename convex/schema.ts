@@ -5,5 +5,6 @@ export default defineSchema({
   sketches: defineTable({
     prompt: v.string(),
     result: v.optional(v.string()),
+    firebaseUrl: v.optional(v.string()),
   }),
 });

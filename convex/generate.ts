@@ -66,7 +66,6 @@ export const generate = internalAction({
       const generatedImageUrl = output[1];
       console.log("Generated image URL:", generatedImageUrl);
 
-         
       const response = await fetch(generatedImageUrl);
       const arrayBuffer = await response.arrayBuffer();
       const base64Image = Buffer.from(arrayBuffer).toString("base64");
@@ -74,8 +73,8 @@ export const generate = internalAction({
       // Save the image data to Convex
       await ctx.runMutation(internal.sketches.internalUpdateSketchResult, {
         sketchId,
-        result: `data:image/png;base64,${base64Image}`,
-        firebaseUrl: generatedImageUrl
+        result: base64Image,
+        firebaseUrl: generatedImageUrl,
       });
       console.log("Sketch result updated in database");
 

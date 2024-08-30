@@ -360,11 +360,11 @@ function GeneratePage() {
                   key={sketch._id.toString()}
                   className="shadow-lg relative group"
                 >
-                  {sketch.firebaseUrl ? (
+                  {sketch.result ? (
                     <Image
                       width="256"
                       height="256"
-                      src={sketch.firebaseUrl}
+                      src={`data:image/jpeg;base64,${sketch.result}`}
                       alt={`Sketch of ${sketch.prompt}`}
                       loading="lazy"
                     />

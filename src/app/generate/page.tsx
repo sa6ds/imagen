@@ -1,24 +1,20 @@
 "use client";
 
 import { api } from "../../../convex/_generated/api";
-import { useForm } from "react-hook-form";
-import { useMutation, useQuery } from "convex/react";
-import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import Image from "next/image";
-import { RiseLoader } from "react-spinners";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery } from "convex/react";
+import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
+import { RiseLoader } from "react-spinners";
 import Filter from "bad-words";
-import { useAuthUser } from "../components/auth/useAuthUser";
 import axios from "axios";
-import {
-  getStorage,
-  ref,
-  uploadString,
-  getDownloadURL,
-} from "firebase/storage";
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
+import { doc, updateDoc } from "firebase/firestore";
+
+import { useAuthUser } from "../components/auth/useAuthUser";
 import { db, storage } from "../Firebase";
 import { Id } from "../../../convex/_generated/dataModel";
 
@@ -94,31 +90,23 @@ function GeneratePage() {
     sketchId: string
   ): Promise<string> => {
     try {
-      // Download the image
       const response = await axios.get(imageUrl, {
         responseType: "arraybuffer",
       });
       const buffer = Buffer.from(response.data, "binary");
 
-      // Convert buffer to base64
       const base64Image = buffer.toString("base64");
 
-      console.log("Storage instance:", storage);
-
-      // Upload to Firebase Storage
       const storageRef = ref(storage, `sketches/${sketchId}`);
       await uploadString(storageRef, base64Image, "base64", {
         contentType: "image/jpeg",
       });
 
-      // Get the download URL
       const downloadURL = await getDownloadURL(storageRef);
 
-      // Update Firestore document with new URL
       const sketchRef = doc(db, "sketches", sketchId);
       await updateDoc(sketchRef, { result: downloadURL });
 
-      // Update Convex database with Firebase URL
       await updateSketchResult({
         sketchId: sketchId as Id<"sketches">,
         result: imageUrl,
@@ -127,8 +115,7 @@ function GeneratePage() {
 
       return downloadURL;
     } catch (error) {
-      console.error("Error downloading and storing image:", error);
-      throw error;
+      throw new Error("Failed to download and store image");
     }
   };
 
@@ -161,34 +148,24 @@ function GeneratePage() {
     try {
       const image = await canvasRef.current?.exportImage("jpeg");
 
-      // Call the Replicate API to generate the image
       const replicateResponse = await saveSketchMutation({
         ...formData,
         image,
       });
 
-      // Replace the type assertion with this:
       const typedResponse = replicateResponse as unknown as {
         result: string;
         _id: string;
       };
 
       if (typedResponse.result && typedResponse._id) {
-        // Download and store the image
-        const storedImageUrl = await downloadAndStoreImage(
-          typedResponse.result,
-          typedResponse._id
-        );
-
-        // The Firestore document is already updated in downloadAndStoreImage function
-        console.log("Image stored successfully:", storedImageUrl);
+        await downloadAndStoreImage(typedResponse.result, typedResponse._id);
       }
 
       await logAcceptedPrompt(formData.prompt);
       clearCanvasAndHistory();
       reset();
     } catch (error) {
-      console.error("Error submitting prompt:", error);
       alert(
         "An error occurred while submitting your prompt. Please try again."
       );
@@ -198,7 +175,7 @@ function GeneratePage() {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    // If the target is an input or textarea, don't prevent default behavior
+    // Allow input and textarea elements to handle their own key events
     if (
       e.target instanceof HTMLInputElement ||
       e.target instanceof HTMLTextAreaElement
@@ -206,25 +183,31 @@ function GeneratePage() {
       return;
     }
 
-    // For other elements, prevent default and handle shortcuts
-    e.preventDefault();
+    // Only handle specific keys (c, z, x) without modifiers
+    if (
+      ["c", "z", "x"].includes(e.key.toLowerCase()) &&
+      !e.metaKey &&
+      !e.ctrlKey
+    ) {
+      e.preventDefault();
 
-    switch (e.key.toLowerCase()) {
-      case "c":
-        canvasRef.current?.clearCanvas();
-        setActiveButton("clear");
-        setTimeout(() => setActiveButton(null), 200);
-        break;
-      case "z":
-        canvasRef.current?.undo();
-        setActiveButton("undo");
-        setTimeout(() => setActiveButton(null), 200);
-        break;
-      case "x":
-        canvasRef.current?.redo();
-        setActiveButton("redo");
-        setTimeout(() => setActiveButton(null), 200);
-        break;
+      switch (e.key.toLowerCase()) {
+        case "c":
+          canvasRef.current?.clearCanvas();
+          setActiveButton("clear");
+          setTimeout(() => setActiveButton(null), 200);
+          break;
+        case "z":
+          canvasRef.current?.undo();
+          setActiveButton("undo");
+          setTimeout(() => setActiveButton(null), 200);
+          break;
+        case "x":
+          canvasRef.current?.redo();
+          setActiveButton("redo");
+          setTimeout(() => setActiveButton(null), 200);
+          break;
+      }
     }
   };
 
@@ -255,10 +238,11 @@ function GeneratePage() {
   }, []);
 
   return (
-    <main className="sm:container mx-auto py-12 flex flex-col items-center justify-between pt-8 dark:text-slate-200">
+    <main className="sm:container py-12 items-center justify-between pt-8 dark:text-slate-200">
       <Head>
         <title>Generate | Imagen</title>
       </Head>
+
       <div className="container mx-auto lg:flex gap-16">
         <form
           className="flex flex-col gap-2 w-fit mx-auto"
@@ -460,8 +444,6 @@ function GeneratePage() {
             </ul>
             <button
               onClick={() => setIsModalOpen(false)}
-              // className="mt-6 bg-orange-500 rounded-md text-white px-4 py-2 hover:bg-orange-600 transition-colors duration-200"
-
               className="text-white mt-6 bg-gradient-to-b from-orange-500 to-red-500 border-b-4 border-orange-700 hover:shadow-lg hover:bg-gradient-to-b rounded-lg px-4 py-2"
             >
               Close

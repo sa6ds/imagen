@@ -1,9 +1,7 @@
 "use client";
-
 import Image from "next/image";
 import { api } from "../../../convex/_generated/api";
 import { useQuery } from "convex/react";
-
 import { RiseLoader } from "react-spinners";
 
 export default function Home() {
@@ -21,11 +19,11 @@ export default function Home() {
       <div className="flex flex-wrap justify-center gap-4">
         {sortedSketches.map((sketch) => (
           <div className="w-64" key={sketch._id.toString()}>
-            {sketch.result && sketch ? (
+            {sketch.result ? (
               <Image
                 width="256"
                 height="256"
-                src={sketch.result}
+                src={`data:image/jpeg;base64,${sketch.result}`}
                 alt={`Sketch of ${sketch.prompt}`}
               />
             ) : (

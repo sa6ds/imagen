@@ -1,5 +1,4 @@
 "use client";
-
 import { api } from "../../../convex/_generated/api";
 import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
@@ -13,7 +12,6 @@ import Filter from "bad-words";
 import axios from "axios";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
-
 import { useAuthUser } from "../components/auth/useAuthUser";
 import { db, storage } from "../Firebase";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -175,7 +173,6 @@ function GeneratePage() {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    // Allow input and textarea elements to handle their own key events
     if (
       e.target instanceof HTMLInputElement ||
       e.target instanceof HTMLTextAreaElement
@@ -183,7 +180,6 @@ function GeneratePage() {
       return;
     }
 
-    // Only handle specific keys (c, z, x) without modifiers
     if (
       ["c", "z", "x"].includes(e.key.toLowerCase()) &&
       !e.metaKey &&
@@ -238,122 +234,125 @@ function GeneratePage() {
   }, []);
 
   return (
-    <main className="sm:container py-12 items-center justify-between pt-8 dark:text-slate-200">
+    <main className="sm:container mx-auto py-12 flex flex-col items-center justify-between pt-8 dark:text-slate-200">
       <Head>
         <title>Generate | Imagen</title>
       </Head>
 
-      <div className="container mx-auto lg:flex gap-16">
-        <form
-          className="flex flex-col gap-2 w-fit mx-auto"
-          onSubmit={handleSubmit(handlePromptSubmit)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              handleSubmit(handlePromptSubmit)();
-            }
-          }}
-        >
-          <label htmlFor="prompt" className="font-semibold">
-            Prompt
-          </label>
-          {hasError && (
-            <div className="bg-red-300 rounded-lg p-3">
-              <p className="text-red-800">
-                &#x2022; Your prompt contains inappropriate words.
-              </p>
+      <div className="container mx-auto lg:flex lg:gap-16">
+        <div className="lg:w-[300px] flex-shrink-0 mb-10 lg:mb-0">
+          <form
+            className="flex flex-col gap-2 w-fit mx-auto"
+            onSubmit={handleSubmit(handlePromptSubmit)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSubmit(handlePromptSubmit)();
+              }
+            }}
+          >
+            <label htmlFor="prompt" className="font-semibold">
+              Prompt
+            </label>
+            {hasError && (
+              <div className="bg-red-300 rounded-lg p-3">
+                <p className="text-red-800">
+                  &#x2022; Your prompt contains inappropriate words.
+                </p>
+              </div>
+            )}
+            <div className="relative">
+              <input
+                id="prompt"
+                maxLength={60}
+                required
+                className="rounded-md text-slate-700 focus:shadow-lg shadow-md p-2 border pr-16"
+                {...register("prompt", { required: true })}
+                aria-label="Enter your prompt"
+              />
+              <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-gray-500">
+                {charCount}/60
+              </span>
             </div>
-          )}
-          <div className="relative">
-            <input
-              id="prompt"
-              maxLength={60}
-              required
-              className="rounded-md text-slate-700 focus:shadow-lg shadow-md p-2 border pr-16"
-              {...register("prompt", { required: true })}
-              aria-label="Enter your prompt"
-            />
-            <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-gray-500">
-              {charCount}/60
-            </span>
-          </div>
-          <label htmlFor="canvas-container" className="font-semibold">
-            Canvas (Draw something below)
-          </label>
-          <div
-            id="canvas-container"
-            tabIndex={0}
-            className="focus:outline-none"
-          >
-            <ReactSketchCanvas
-              ref={canvasRef}
-              className="border shadow-md rounded-sm"
-              style={{ width: 256, height: 256 }}
-              strokeWidth={4}
-              strokeColor="black"
-            />
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={(e) => handleButtonClick("undo", e)}
-              title="Undo last stroke (Z)"
-              className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
-                activeButton === "undo" ? "btn-active" : ""
-              }`}
+            <label htmlFor="canvas-container" className="font-semibold">
+              Canvas (Draw something below)
+            </label>
+            <div
+              id="canvas-container"
+              tabIndex={0}
+              className="focus:outline-none"
             >
-              Undo
-            </button>
+              <ReactSketchCanvas
+                ref={canvasRef}
+                className="border shadow-md rounded-sm"
+                style={{ width: 256, height: 256 }}
+                strokeWidth={4}
+                strokeColor="black"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={(e) => handleButtonClick("undo", e)}
+                title="Undo last stroke (Z)"
+                className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
+                  activeButton === "undo" ? "btn-active" : ""
+                }`}
+              >
+                Undo
+              </button>
+              <button
+                onClick={(e) => handleButtonClick("redo", e)}
+                title="Redo last undone stroke (X)"
+                className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
+                  activeButton === "redo" ? "btn-active" : ""
+                }`}
+              >
+                Redo
+              </button>
+              <button
+                onClick={(e) => handleButtonClick("clear", e)}
+                title="Clear canvas (C)"
+                className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
+                  activeButton === "clear" ? "btn-active" : ""
+                }`}
+              >
+                Clear
+              </button>
+            </div>
             <button
-              onClick={(e) => handleButtonClick("redo", e)}
-              title="Redo last undone stroke (X)"
-              className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
-                activeButton === "redo" ? "btn-active" : ""
+              type="submit"
+              disabled={isLoading}
+              className={`hover:shadow-lg cursor-pointer shadow-md relative w-full border-grey-100 mx-auto rounded-lg border-b-4 border-orange-700 bg-gradient-to-b from-orange-500 to-red-500 px-8 py-1 text-white ease-in-out ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
+              title="Submit (Enter)"
             >
-              Redo
+              {isLoading ? "Submitting..." : "Submit"}
             </button>
-            <button
-              onClick={(e) => handleButtonClick("clear", e)}
-              title="Clear canvas (C)"
-              className={`btn text-slate-700 mt-4 bg-white rounded-md hover:shadow-lg shadow-md p-2 flex-1 transition-colors duration-200 ${
-                activeButton === "clear" ? "btn-active" : ""
-              }`}
-            >
-              Clear
-            </button>
-          </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`hover:shadow-lg cursor-pointer shadow-md relative w-full border-grey-100 mx-auto rounded-lg border-b-4 border-orange-700 bg-gradient-to-b from-orange-500 to-red-500 px-8 py-1 text-white ease-in-out ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            title="Submit (Enter)"
-          >
-            {isLoading ? "Submitting..." : "Submit"}
-          </button>
-        </form>
-        <section className="mt-10 lg:mt-0">
+          </form>
+        </div>
+
+        <section className="flex-grow">
           <h2 className="font-semibold text-center mb-4 lg:mb-2 lg:text-left">
             Latest Sketches
           </h2>
-          <div className="flex flex-wrap justify-center lg:justify-normal gap-4 ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {sortedSketches.map((sketch) =>
               sketch && sketch.result ? (
                 <div
                   key={sketch._id.toString()}
-                  className="shadow-lg relative group"
+                  className="shadow-lg relative group aspect-square w-full"
                 >
                   {sketch.result ? (
                     <Image
-                      width="256"
-                      height="256"
                       src={`data:image/jpeg;base64,${sketch.result}`}
                       alt={`Sketch of ${sketch.prompt}`}
+                      layout="fill"
+                      objectFit="cover"
                       loading="lazy"
                     />
                   ) : (
-                    <div className="border h-[256px] rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center">
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
                       <RiseLoader color="#f97316" speedMultiplier={1} />
                     </div>
                   )}
@@ -365,7 +364,7 @@ function GeneratePage() {
                 </div>
               ) : (
                 <div
-                  className="border h-[256px] rounded-sm dark:border-slate-500 flex flex-col w-[256px] items-center justify-center"
+                  className="aspect-square w-full flex items-center justify-center bg-gray-100 dark:bg-gray-800"
                   key={sketch._id.toString()}
                 >
                   <RiseLoader color="#f97316" speedMultiplier={1} />
@@ -374,14 +373,9 @@ function GeneratePage() {
             )}
             <Link
               href={"/collection"}
-              type="button"
-              className="transition duration-50 ease-in-out delay-100 text-white bg-gradient-to-b from-orange-500 to-red-500 border-b-4 border-orange-700 hover:shadow-lg hover:bg-gradient-to-b rounded-lg px-5 py-2 text-base flex text-center w-[256px] h-[256px] flex-col justify-center gap-4"
+              className="aspect-square w-full flex items-center justify-center transition duration-50 ease-in-out delay-100 text-white bg-gradient-to-b from-orange-500 to-red-500 border-b-4 border-orange-700 hover:shadow-lg hover:bg-gradient-to-b rounded-lg"
             >
-              <div className="flex flex-col justify-center">
-                <div className="text-lg font-semibold">
-                  View Collection -&gt;
-                </div>
-              </div>
+              <div className="text-lg font-semibold">View Collection -&gt;</div>
             </Link>
           </div>
         </section>
